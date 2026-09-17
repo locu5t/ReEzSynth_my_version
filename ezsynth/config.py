@@ -2,6 +2,8 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field, validator
 
+from .temporal.config import TemporalConfig
+
 
 class ProjectConfig(BaseModel):
     name: str = "DefaultProject"
@@ -55,16 +57,7 @@ class BlendingConfig(BaseModel):
     @validator("poisson_solver")
     def solver_must_be_valid(cls, v):
         valid_solvers = [
-            # Standard Solvers
-            "lsqr",
-            "lsmr",
-            # Advanced CPU Solvers
-            "cg",
-            "amg",  # Requires pyamg
-            # Algorithmic Alternatives
-            "seamless",
-            # Special
-            "disabled",
+            "lsqr", "lsmr", "cg", "amg", "seamless", "disabled",
         ]
         solver = v.lower()
         if solver not in valid_solvers:
@@ -75,16 +68,13 @@ class BlendingConfig(BaseModel):
 class EbsynthParamsConfig(BaseModel):
     uniformity: float = 3500.0
     patch_size: int = 7
-    vote_mode: str = "weighted"  # 'weighted' or 'plain'
+    vote_mode: str = "weighted"
     search_vote_iters: int = 12
     patch_match_iters: int = 6
     stop_threshold: int = 5
-    # New: Skip random search for patches with SSD error below this. 0.0 disables.
     search_pruning_threshold: float = 50.0
-    # New: Cost function for patch matching.
-    cost_function: str = "ssd"  # "ssd" or "ncc"
-    # New: Backend for synthesis operations.
-    backend: str = "cuda"  # "cuda" or "torch"
+    cost_function: str = "ssd"
+    backend: str = "cuda"
     extra_pass_3x3: bool = False
     edge_weight: float = 1.0
     image_weight: float = 6.0
@@ -123,3 +113,4 @@ class MainConfig(BaseModel):
     blending: BlendingConfig = Field(default_factory=BlendingConfig)
     ebsynth_params: EbsynthParamsConfig
     debug: DebugConfig = Field(default_factory=DebugConfig)
+    temporal: TemporalConfig = Field(default_factory=TemporalConfig)

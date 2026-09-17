@@ -1,0 +1,7 @@
+# CPU unit-test environment only; do not replace the app/model environment.
+# Python 3.12+; install torch==2.10.0 from the official CPU wheel index separately.
+numpy==2.3.5
+opencv-python-headless==4.13.0.92
+pydantic==2.13.4
+PyYAML==6.0.3
+pytest==9.0.2

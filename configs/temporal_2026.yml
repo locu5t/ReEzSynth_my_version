@@ -1,0 +1,54 @@
+# Copy this file and replace the example paths/indices with your project.
+# All indices are zero-based positions in the sorted content frame sequence.
+# Relative paths resolve from the working directory, not this YAML's directory.
+project:
+  name: TemporalReferenceDemo
+  content_dir: projects/my_project/content
+  style_path:
+    - projects/my_project/style/00000.png
+    - projects/my_project/style/00042.png
+  style_indices: [0, 42]
+  output_dir: output/TemporalReferenceDemo
+  cache_dir: cache/TemporalReferenceDemo
+  force_style_size: true
+  force_recompute_flow: false
+precomputation:
+  flow_engine: RAFT
+  flow_model: sintel
+  edge_method: Classic
+pipeline:
+  pyramid_levels: 5
+  # These legacy chain controls are not used by the direct-reference path.
+  use_temporal_nnf_propagation: false
+  use_sparse_feature_guide: false
+ebsynth_params:
+  backend: cuda
+  cost_function: ssd
+  extra_pass_3x3: false
+  patch_size: 7
+  uniformity: 3500.0
+  edge_weight: 1.0
+  image_weight: 6.0
+  pos_weight: 2.0
+  warp_weight: 0.5
+temporal:
+  enabled: true
+  flow_backend: legacy # legacy = existing RAFT/NeuFlow; opencv = model-free DIS
+  # For WAFT, run the optional worker, then choose precomputed and set its folder.
+  precomputed_flow_dir: null
+  warp_device: auto
+  max_references: 3
+  max_reference_distance: null
+  # First frame of EACH NEW SHOT, e.g. [75, 140]. Every shot needs a painted keyframe.
+  scene_cuts: []
+  detect_scene_cuts: false
+  confidence_threshold: 0.2
+  recommend_fraction: 0.15
+  blend_disagreement: 0.12
+  face_annotations: null # e.g. projects/my_project/guides/faces.json
+  eye_state_tolerance: 0.25
+  tracks_path: null # e.g. projects/my_project/guides/tracks.npz
+  semantic_guide_dir: null
+  object_label_dir: null
+  missing_reference: warn # error = stop and write report when support is insufficient
+  seed: 0
